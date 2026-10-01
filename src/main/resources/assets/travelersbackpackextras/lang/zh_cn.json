@@ -38,6 +38,7 @@
   "effect.travelersbackpackextras.creative_flight": "创造飞行",
 
   "message.travelersbackpackextras.upgrade_locked": "背包里的堆叠需要 ×%s 的倍率，取下这个升级只剩 ×%s，请先取出这些物品",
+  "screen.travelersbackpackextras.capacity_upgrade": "扩容升级",
   "screen.travelersbackpackextras.config": "额外升级设置",
   "screen.travelersbackpackextras.infinite_fluids": "无限水/岩浆：%s",
   "screen.travelersbackpackextras.apple_flight": "金苹果给予创造飞行：%s"

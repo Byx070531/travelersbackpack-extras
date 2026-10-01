@@ -38,6 +38,7 @@
   "effect.travelersbackpackextras.creative_flight": "Creative Flight",
 
   "message.travelersbackpackextras.upgrade_locked": "The stacks inside need x%s, but only x%s would be left - empty them first",
+  "screen.travelersbackpackextras.capacity_upgrade": "Capacity Upgrade",
   "screen.travelersbackpackextras.config": "Extra Upgrades Settings",
   "screen.travelersbackpackextras.infinite_fluids": "Endless water and lava: %s",
   "screen.travelersbackpackextras.apple_flight": "Apple grants creative flight: %s"
