@@ -1,0 +1,32 @@
+{
+    "criteria":  {
+                     "has__minecraft_logs":  {
+                                                 "trigger":  "minecraft:inventory_changed",
+                                                 "conditions":  {
+                                                                    "items":  [
+                                                                                  {
+                                                                                      "items":  "#minecraft:logs"
+                                                                                  }
+                                                                              ]
+                                                                }
+                                             },
+                     "has_the_recipe":  {
+                                            "trigger":  "minecraft:recipe_unlocked",
+                                            "conditions":  {
+                                                               "recipe":  "travelersbackpackextras:wooden_upgrade"
+                                                           }
+                                        }
+                 },
+    "parent":  "minecraft:recipes/root",
+    "rewards":  {
+                    "recipes":  [
+                                    "travelersbackpackextras:wooden_upgrade"
+                                ]
+                },
+    "requirements":  [
+                         [
+                             "has_the_recipe",
+                             "has__minecraft_logs"
+                         ]
+                     ]
+}

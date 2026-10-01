@@ -1,0 +1,16 @@
+{
+    "key":  {
+                "A":  "travelersbackpackextras:netherite_upgrade"
+            },
+    "category":  "misc",
+    "pattern":  [
+                    "AAA",
+                    "AAA",
+                    "AAA"
+                ],
+    "result":  {
+                   "count":  1,
+                   "id":  "travelersbackpackextras:ultimate_upgrade"
+               },
+    "type":  "minecraft:crafting_shaped"
+}

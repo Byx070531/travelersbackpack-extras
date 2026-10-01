@@ -1,0 +1,32 @@
+{
+    "criteria":  {
+                     "has_the_recipe":  {
+                                            "trigger":  "minecraft:recipe_unlocked",
+                                            "conditions":  {
+                                                               "recipe":  "travelersbackpackextras:diamond_upgrade"
+                                                           }
+                                        },
+                     "has_minecraft_diamond_block":  {
+                                                         "trigger":  "minecraft:inventory_changed",
+                                                         "conditions":  {
+                                                                            "items":  [
+                                                                                          {
+                                                                                              "items":  "minecraft:diamond_block"
+                                                                                          }
+                                                                                      ]
+                                                                        }
+                                                     }
+                 },
+    "parent":  "minecraft:recipes/root",
+    "rewards":  {
+                    "recipes":  [
+                                    "travelersbackpackextras:diamond_upgrade"
+                                ]
+                },
+    "requirements":  [
+                         [
+                             "has_the_recipe",
+                             "has_minecraft_diamond_block"
+                         ]
+                     ]
+}

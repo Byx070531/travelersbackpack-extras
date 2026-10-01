@@ -1,0 +1,32 @@
+{
+    "criteria":  {
+                     "has_the_recipe":  {
+                                            "trigger":  "minecraft:recipe_unlocked",
+                                            "conditions":  {
+                                                               "recipe":  "travelersbackpackextras:elytra"
+                                                           }
+                                        },
+                     "has_travelersbackpackextras_dragon_scale":  {
+                                                                      "trigger":  "minecraft:inventory_changed",
+                                                                      "conditions":  {
+                                                                                         "items":  [
+                                                                                                       {
+                                                                                                           "items":  "travelersbackpackextras:dragon_scale"
+                                                                                                       }
+                                                                                                   ]
+                                                                                     }
+                                                                  }
+                 },
+    "parent":  "minecraft:recipes/root",
+    "rewards":  {
+                    "recipes":  [
+                                    "travelersbackpackextras:elytra"
+                                ]
+                },
+    "requirements":  [
+                         [
+                             "has_the_recipe",
+                             "has_travelersbackpackextras_dragon_scale"
+                         ]
+                     ]
+}

@@ -1,0 +1,21 @@
+{
+    "key":  {
+                "Q":  "minecraft:silence_armor_trim_smithing_template",
+                "A":  "travelersbackpackextras:enchanted_diamond_golden_apple",
+                "R":  "minecraft:vex_armor_trim_smithing_template",
+                "N":  "minecraft:netherite_upgrade_smithing_template",
+                "S":  "minecraft:flow_armor_trim_smithing_template",
+                "T":  "minecraft:tide_armor_trim_smithing_template"
+            },
+    "category":  "misc",
+    "pattern":  [
+                    "QAR",
+                    "ANA",
+                    "SAT"
+                ],
+    "result":  {
+                   "count":  1,
+                   "id":  "travelersbackpackextras:omega_upgrade_smithing_template"
+               },
+    "type":  "minecraft:crafting_shaped"
+}

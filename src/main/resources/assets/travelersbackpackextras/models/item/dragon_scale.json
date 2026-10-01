@@ -1,0 +1,6 @@
+{
+    "textures":  {
+                     "layer0":  "travelersbackpackextras:item/dragon_scale"
+                 },
+    "parent":  "item/generated"
+}

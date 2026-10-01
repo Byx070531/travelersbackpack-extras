@@ -1,0 +1,6 @@
+{
+    "textures":  {
+                     "layer0":  "travelersbackpackextras:item/emerald_upgrade"
+                 },
+    "parent":  "item/generated"
+}

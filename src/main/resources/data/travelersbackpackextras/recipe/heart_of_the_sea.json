@@ -1,0 +1,19 @@
+{
+    "key":  {
+                "C":  "minecraft:prismarine_crystals",
+                "S":  "minecraft:nautilus_shell",
+                "R":  "minecraft:prismarine_shard",
+                "N":  "minecraft:nether_star"
+            },
+    "category":  "misc",
+    "pattern":  [
+                    "CSC",
+                    "RNR",
+                    "CSC"
+                ],
+    "result":  {
+                   "count":  1,
+                   "id":  "minecraft:heart_of_the_sea"
+               },
+    "type":  "minecraft:crafting_shaped"
+}

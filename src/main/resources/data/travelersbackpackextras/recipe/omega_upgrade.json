@@ -1,0 +1,10 @@
+{
+    "addition":  "advancednetherite:netherite_diamond_block",
+    "template":  "travelersbackpackextras:omega_upgrade_smithing_template",
+    "result":  {
+                   "count":  1,
+                   "id":  "travelersbackpackextras:omega_upgrade"
+               },
+    "type":  "minecraft:smithing_transform",
+    "base":  "travelersbackpackextras:ultimate_upgrade"
+}

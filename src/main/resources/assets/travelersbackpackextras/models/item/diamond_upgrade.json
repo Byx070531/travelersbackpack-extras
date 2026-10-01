@@ -1,0 +1,6 @@
+{
+    "textures":  {
+                     "layer0":  "travelersbackpackextras:item/diamond_upgrade"
+                 },
+    "parent":  "item/generated"
+}

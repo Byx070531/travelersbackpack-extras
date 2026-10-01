@@ -1,0 +1,17 @@
+{
+    "key":  {
+                "A":  "minecraft:iron_block",
+                "B":  "travelersbackpackextras:copper_upgrade"
+            },
+    "category":  "misc",
+    "pattern":  [
+                    "AAA",
+                    "ABA",
+                    "AAA"
+                ],
+    "result":  {
+                   "count":  1,
+                   "id":  "travelersbackpackextras:iron_upgrade"
+               },
+    "type":  "minecraft:crafting_shaped"
+}

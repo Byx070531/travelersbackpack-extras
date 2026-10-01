@@ -1,0 +1,27 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.tbupgrades.extras.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "priority": 1500,
+  "mixins": [
+    "AbstractContainerMenuMixin",
+    "BackpackBaseMenuMixin",
+    "BackpackWrapperMixin",
+    "ContainerSorterMixin",
+    "ContainerSorterTransferMixin",
+    "FeedingUpgradeMixin",
+    "FluidTankMixin",
+    "HoseItemMixin",
+    "ItemStackHandlerMixin",
+    "ItemStackMixin",
+    "ResultSlotMixin",
+    "ServerActionsMixin",
+    "SortSelectorMixin",
+    "TanksUpgradeMixin",
+    "UpgradeLockableSlotItemHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

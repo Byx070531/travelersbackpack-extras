@@ -1,0 +1,32 @@
+{
+    "criteria":  {
+                     "has_minecraft_copper_block":  {
+                                                        "trigger":  "minecraft:inventory_changed",
+                                                        "conditions":  {
+                                                                           "items":  [
+                                                                                         {
+                                                                                             "items":  "minecraft:copper_block"
+                                                                                         }
+                                                                                     ]
+                                                                       }
+                                                    },
+                     "has_the_recipe":  {
+                                            "trigger":  "minecraft:recipe_unlocked",
+                                            "conditions":  {
+                                                               "recipe":  "travelersbackpackextras:copper_upgrade"
+                                                           }
+                                        }
+                 },
+    "parent":  "minecraft:recipes/root",
+    "rewards":  {
+                    "recipes":  [
+                                    "travelersbackpackextras:copper_upgrade"
+                                ]
+                },
+    "requirements":  [
+                         [
+                             "has_the_recipe",
+                             "has_minecraft_copper_block"
+                         ]
+                     ]
+}

@@ -1,0 +1,6 @@
+{
+    "textures":  {
+                     "layer0":  "travelersbackpackextras:item/enchanted_diamond_golden_apple"
+                 },
+    "parent":  "item/generated"
+}

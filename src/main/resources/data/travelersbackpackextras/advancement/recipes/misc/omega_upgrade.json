@@ -1,0 +1,32 @@
+{
+    "criteria":  {
+                     "has_travelersbackpackextras_ultimate_upgrade":  {
+                                                                          "trigger":  "minecraft:inventory_changed",
+                                                                          "conditions":  {
+                                                                                             "items":  [
+                                                                                                           {
+                                                                                                               "items":  "travelersbackpackextras:ultimate_upgrade"
+                                                                                                           }
+                                                                                                       ]
+                                                                                         }
+                                                                      },
+                     "has_the_recipe":  {
+                                            "trigger":  "minecraft:recipe_unlocked",
+                                            "conditions":  {
+                                                               "recipe":  "travelersbackpackextras:omega_upgrade"
+                                                           }
+                                        }
+                 },
+    "parent":  "minecraft:recipes/root",
+    "rewards":  {
+                    "recipes":  [
+                                    "travelersbackpackextras:omega_upgrade"
+                                ]
+                },
+    "requirements":  [
+                         [
+                             "has_the_recipe",
+                             "has_travelersbackpackextras_ultimate_upgrade"
+                         ]
+                     ]
+}

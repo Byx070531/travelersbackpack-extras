@@ -1,0 +1,21 @@
+{
+    "key":  {
+                "N":  "minecraft:netherite_ingot",
+                "H":  "minecraft:heart_of_the_sea",
+                "M":  "minecraft:phantom_membrane",
+                "D":  "travelersbackpackextras:dragon_scale",
+                "E":  "minecraft:elytra",
+                "Y":  "minecraft:ender_eye"
+            },
+    "category":  "misc",
+    "pattern":  [
+                    "YHY",
+                    "MEM",
+                    "NDN"
+                ],
+    "result":  {
+                   "count":  1,
+                   "id":  "minecraft:elytra"
+               },
+    "type":  "minecraft:crafting_shaped"
+}

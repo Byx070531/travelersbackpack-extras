@@ -1,0 +1,17 @@
+{
+    "key":  {
+                "A":  "#minecraft:logs",
+                "B":  "travelersbackpack:blank_upgrade"
+            },
+    "category":  "misc",
+    "pattern":  [
+                    "AAA",
+                    "ABA",
+                    "AAA"
+                ],
+    "result":  {
+                   "count":  1,
+                   "id":  "travelersbackpackextras:wooden_upgrade"
+               },
+    "type":  "minecraft:crafting_shaped"
+}

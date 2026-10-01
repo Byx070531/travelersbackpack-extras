@@ -1,0 +1,18 @@
+{
+    "key":  {
+                "D":  "minecraft:diamond_block",
+                "E":  "minecraft:elytra",
+                "A":  "minecraft:enchanted_golden_apple"
+            },
+    "category":  "misc",
+    "pattern":  [
+                    "DED",
+                    "DAD",
+                    "DDD"
+                ],
+    "result":  {
+                   "count":  1,
+                   "id":  "travelersbackpackextras:enchanted_diamond_golden_apple"
+               },
+    "type":  "minecraft:crafting_shaped"
+}

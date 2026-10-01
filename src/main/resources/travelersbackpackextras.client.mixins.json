@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.tbupgrades.extras.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "priority": 1500,
+  "client": [
+    "AbstractContainerScreenAccessor",
+    "AbstractContainerScreenMixin",
+    "GuiGraphicsMixin",
+    "KeyboardHandlerMixin",
+    "MouseHandlerMixin",
+    "SortKeyMappingMixin",
+    "TankWidgetMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

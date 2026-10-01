@@ -1,0 +1,6 @@
+{
+    "textures":  {
+                     "layer0":  "travelersbackpackextras:item/omega_upgrade_smithing_template"
+                 },
+    "parent":  "item/generated"
+}

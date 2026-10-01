@@ -1,0 +1,32 @@
+{
+    "criteria":  {
+                     "has_minecraft_enchanted_golden_apple":  {
+                                                                  "trigger":  "minecraft:inventory_changed",
+                                                                  "conditions":  {
+                                                                                     "items":  [
+                                                                                                   {
+                                                                                                       "items":  "minecraft:enchanted_golden_apple"
+                                                                                                   }
+                                                                                               ]
+                                                                                 }
+                                                              },
+                     "has_the_recipe":  {
+                                            "trigger":  "minecraft:recipe_unlocked",
+                                            "conditions":  {
+                                                               "recipe":  "travelersbackpackextras:enchanted_diamond_golden_apple"
+                                                           }
+                                        }
+                 },
+    "parent":  "minecraft:recipes/root",
+    "rewards":  {
+                    "recipes":  [
+                                    "travelersbackpackextras:enchanted_diamond_golden_apple"
+                                ]
+                },
+    "requirements":  [
+                         [
+                             "has_the_recipe",
+                             "has_minecraft_enchanted_golden_apple"
+                         ]
+                     ]
+}

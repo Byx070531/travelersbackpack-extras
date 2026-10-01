@@ -1,0 +1,32 @@
+{
+    "criteria":  {
+                     "has_minecraft_nautilus_shell":  {
+                                                          "trigger":  "minecraft:inventory_changed",
+                                                          "conditions":  {
+                                                                             "items":  [
+                                                                                           {
+                                                                                               "items":  "minecraft:nautilus_shell"
+                                                                                           }
+                                                                                       ]
+                                                                         }
+                                                      },
+                     "has_the_recipe":  {
+                                            "trigger":  "minecraft:recipe_unlocked",
+                                            "conditions":  {
+                                                               "recipe":  "travelersbackpackextras:heart_of_the_sea"
+                                                           }
+                                        }
+                 },
+    "parent":  "minecraft:recipes/root",
+    "rewards":  {
+                    "recipes":  [
+                                    "travelersbackpackextras:heart_of_the_sea"
+                                ]
+                },
+    "requirements":  [
+                         [
+                             "has_the_recipe",
+                             "has_minecraft_nautilus_shell"
+                         ]
+                     ]
+}

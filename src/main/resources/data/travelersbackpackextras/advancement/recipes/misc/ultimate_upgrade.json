@@ -1,0 +1,32 @@
+{
+    "criteria":  {
+                     "has_travelersbackpackextras_netherite_upgrade":  {
+                                                                           "trigger":  "minecraft:inventory_changed",
+                                                                           "conditions":  {
+                                                                                              "items":  [
+                                                                                                            {
+                                                                                                                "items":  "travelersbackpackextras:netherite_upgrade"
+                                                                                                            }
+                                                                                                        ]
+                                                                                          }
+                                                                       },
+                     "has_the_recipe":  {
+                                            "trigger":  "minecraft:recipe_unlocked",
+                                            "conditions":  {
+                                                               "recipe":  "travelersbackpackextras:ultimate_upgrade"
+                                                           }
+                                        }
+                 },
+    "parent":  "minecraft:recipes/root",
+    "rewards":  {
+                    "recipes":  [
+                                    "travelersbackpackextras:ultimate_upgrade"
+                                ]
+                },
+    "requirements":  [
+                         [
+                             "has_the_recipe",
+                             "has_travelersbackpackextras_netherite_upgrade"
+                         ]
+                     ]
+}
