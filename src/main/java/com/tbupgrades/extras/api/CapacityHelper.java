@@ -244,6 +244,23 @@ public final class CapacityHelper {
         return false;
     }
 
+    /**
+     * The label shown on the upgrade's tab inside the backpack: {@code 16x (1024)}, plus an endless
+     * fluid note from the netherite upgrade up.
+     *
+     * <p>Traveler's Backpack takes this as a translation key and renders it literally when the key is
+     * unknown, so the finished string is composed here with translated parts rather than passed as a
+     * key - the numbers differ per tier, which a fixed key cannot express.
+     */
+    public static String widgetTitle(CapacityTier tier) {
+        long count = Math.min(tier.multiplier() * 64L, CapacityTier.MAX_SLOT_COUNT);
+        // Single line on purpose: Traveler's Backpack draws this label with a plain string draw, which
+        // does not break on "\n" - a two line title showed up as a missing glyph box instead. The
+        // numbers live in the widget's tooltip, which is rendered properly.
+        return net.minecraft.network.chat.Component
+                .translatable("item.travelersbackpackextras." + tier.id() + "_upgrade").getString();
+    }
+
     /** Backpack tank capacity after applying the multiplier, saturating instead of overflowing. */
     public static long scaleFluidCapacity(long base, long multiplier) {
         if (base <= 0L || multiplier <= 1L) {

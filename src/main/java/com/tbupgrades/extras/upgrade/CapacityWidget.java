@@ -1,5 +1,7 @@
 package com.tbupgrades.extras.upgrade;
 
+import com.tbupgrades.extras.api.CapacityHelper;
+
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
@@ -13,7 +15,7 @@ import java.util.function.Consumer;
  */
 public class CapacityWidget extends UpgradeWidgetBase<CapacityUpgrade> {
     public CapacityWidget(BackpackScreen screen, CapacityUpgrade upgrade, Point pos) {
-        super(screen, upgrade, pos, new Point(137, 0), "screen.travelersbackpackextras.capacity_upgrade");
+        super(screen, upgrade, pos, new Point(137, 0), CapacityHelper.widgetTitle(upgrade.tier()));
     }
 
     @Override

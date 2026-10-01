@@ -64,6 +64,12 @@ public class CapacityUpgradeItem extends UpgradeItem {
                                 Consumer<Component> consumer, TooltipFlag flag) {
         consumer.accept(Component.translatable("tooltip.travelersbackpackextras.desc." + this.tier.id())
                 .withStyle(ChatFormatting.GRAY));
+        // A separate tooltip line from the netherite upgrade up: a "\n" inside a
+        // translation value is drawn as a missing-glyph box, not as a line break.
+        if (this.tier.ordinal() >= com.tbupgrades.extras.api.CapacityTier.NETHERITE.ordinal()) {
+            consumer.accept(Component.translatable("tooltip.travelersbackpackextras.infinite_line")
+                    .withStyle(ChatFormatting.GRAY));
+        }
         consumer.accept(Component.translatable("tooltip.travelersbackpackextras.summary",
                         Component.literal(this.tier.multiplier() + "x"),
                         Component.literal(Long.toString(this.tier.multiplier() * 64L)))
