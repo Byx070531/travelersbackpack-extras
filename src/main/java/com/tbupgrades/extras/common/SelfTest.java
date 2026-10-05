@@ -16,7 +16,10 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -211,6 +214,7 @@ public final class SelfTest {
 
         report.append(checkMultipliers(failures));
         report.append(checkEndlessTank(failures));
+        report.append(checkFlightCharge(failures, server));
 
         report.append(failures.isEmpty()
                 ? "RESULT: PASS\n================================"
@@ -299,6 +303,33 @@ public final class SelfTest {
             setUpgrades(wrapper, CapacityTier.OMEGA, CapacityTier.OMEGA, CapacityTier.OMEGA);
             check(out, failures, "omega copies change nothing", "33554432", Long.toString(CapacityHelper.multiplier(wrapper)));
             check(out, failures, "installed count", "3", Integer.toString(CapacityHelper.installedCount(wrapper)));
+
+            // The omega upgrade is the only one with Traveler's Backpack's on/off switch, and the
+            // switch is the only thing standing between "has an omega upgrade" and "may fly". It lives
+            // in that mod's UPGRADE_ENABLED component on the upgrade item, so it is checked there.
+            setUpgrades(wrapper, CapacityTier.OMEGA);
+            check(out, failures, "omega upgrade is in slot 0", "0", Integer.toString(CapacityHelper.omegaSlot(wrapper)));
+            check(out, failures, "a fresh omega upgrade flies", "true",
+                    Boolean.toString(CapacityHelper.hasEnabledOmega(wrapper)));
+            ItemStack switchedOff = wrapper.getUpgrades().getStackInSlot(0).copy();
+            check(out, failures, "flipping the switch reports off", "false",
+                    Boolean.toString(CapacityHelper.flipSwitch(switchedOff)));
+            wrapper.getUpgrades().setStackInSlot(0, switchedOff);
+            check(out, failures, "switched off omega still stores", "33554432",
+                    Long.toString(CapacityHelper.multiplier(wrapper)));
+            check(out, failures, "switched off omega does not fly", "false",
+                    Boolean.toString(CapacityHelper.hasEnabledOmega(wrapper)));
+            check(out, failures, "flipping it back reports on", "true",
+                    Boolean.toString(CapacityHelper.flipSwitch(switchedOff)));
+            wrapper.getUpgrades().setStackInSlot(0, switchedOff);
+            check(out, failures, "switched back on flies again", "true",
+                    Boolean.toString(CapacityHelper.hasEnabledOmega(wrapper)));
+
+            setUpgrades(wrapper, CapacityTier.WOODEN, CapacityTier.DIAMOND);
+            check(out, failures, "no omega means no flight", "false",
+                    Boolean.toString(CapacityHelper.hasEnabledOmega(wrapper)));
+            check(out, failures, "no omega means no switch either", "-1",
+                    Integer.toString(CapacityHelper.omegaSlot(wrapper)));
         } catch (RuntimeException e) {
             failures.add("wrapper construction failed: " + e);
             out.append("  wrapper failed: ").append(e).append('\n');
@@ -364,6 +395,65 @@ public final class SelfTest {
         } catch (RuntimeException e) {
             failures.add("endless tank check failed: " + e);
             out.append("  endless tank check threw: ").append(e).append('\n');
+        }
+        return out.toString();
+    }
+
+    /**
+     * The flight charge has to outlive the session.
+     *
+     * <p>It used to be a map keyed by player UUID, which was emptied on disconnect - so signing out
+     * silently refilled the tank to its maximum. It lives in a data attachment now.
+     *
+     * <p>Checking that the attachment says it is persistent only proves it was declared right. The
+     * question that actually matters is whether the value reaches saved data, so this saves an entity
+     * through {@code Entity.saveWithoutId} and loads it back - which is the exact path a player's own
+     * data takes, since {@code PlayerDataStorage} calls that same method.
+     */
+    private static String checkFlightCharge(List<String> failures, MinecraftServer server) {
+        StringBuilder out = new StringBuilder();
+        try {
+            var attachment = OmegaFlight.chargeAttachment();
+            check(out, failures, "flight charge is registered",
+                    "travelersbackpackextras:omega_flight_charge", attachment.identifier().toString());
+            check(out, failures, "flight charge is persistent", "true",
+                    Boolean.toString(attachment.isPersistent()));
+            check(out, failures, "flight charge survives death", "true",
+                    Boolean.toString(attachment.copyOnDeath()));
+
+            ServerLevel level = server.overworld();
+            Entity probe = net.minecraft.world.entity.EntityType.ARMOR_STAND
+                    .create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+            if (probe == null) {
+                out.append("  (flight charge round trip skipped: no entity to test with)\n");
+                return out.toString();
+            }
+            probe.setAttached(attachment, 137.5D);
+            var output = net.minecraft.world.level.storage.TagValueOutput
+                    .createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
+            probe.saveWithoutId(output);
+
+            Entity reloaded = net.minecraft.world.entity.EntityType.ARMOR_STAND
+                    .create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+            reloaded.load(net.minecraft.world.level.storage.TagValueInput
+                    .create(ProblemReporter.DISCARDING, level.registryAccess(), output.buildResult()));
+            check(out, failures, "flight charge survives a save and load", "137.5",
+                    String.valueOf(reloaded.getAttached(attachment)));
+
+            // Signing out in mid-air and back in again keeps the player in the air, the way it already
+            // does in creative, and that rests entirely on vanilla saving the whole ability block with
+            // "flying" in it. If a Minecraft update stops doing that, this is where it shows up rather
+            // than in a bug report.
+            var abilities = new net.minecraft.world.entity.player.Abilities();
+            abilities.mayfly = true;
+            abilities.flying = true;
+            var restored = new net.minecraft.world.entity.player.Abilities();
+            restored.apply(abilities.pack());
+            check(out, failures, "vanilla saves whether the player was flying", "true",
+                    Boolean.toString(restored.mayfly && restored.flying));
+        } catch (RuntimeException e) {
+            failures.add("flight charge check failed: " + e);
+            out.append("  flight charge check threw: ").append(e).append('\n');
         }
         return out.toString();
     }

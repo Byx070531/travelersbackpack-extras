@@ -23,6 +23,11 @@ public final class TbxConfig {
     private static boolean infiniteFluids = true;
     private static boolean appleGrantsFlight = true;
 
+    private static boolean omegaFlight = true;
+    private static double omegaFlightMax = 600.0D;
+    private static double omegaFlightDrain = 1.0D;
+    private static double omegaFlightRegen = 0.8D;
+
     private TbxConfig() {
     }
 
@@ -34,6 +39,23 @@ public final class TbxConfig {
     /** Whether the enchanted diamond golden apple grants creative flight. */
     public static boolean appleGrantsFlight() {
         return appleGrantsFlight;
+    }
+
+    /** Whether the omega upgrade grants its flight charge at all. */
+    public static boolean omegaFlight() {
+        return omegaFlight;
+    }
+
+    public static double omegaFlightMax() {
+        return omegaFlightMax;
+    }
+
+    public static double omegaFlightDrain() {
+        return omegaFlightDrain;
+    }
+
+    public static double omegaFlightRegen() {
+        return omegaFlightRegen;
     }
 
     public static void setInfiniteFluids(boolean value) {
@@ -53,6 +75,10 @@ public final class TbxConfig {
             json.addProperty("infinite_fluids", infiniteFluids);
             json.addProperty("_comment_apple_flight", "Whether the enchanted diamond golden apple grants 30 minutes of creative flight.");
             json.addProperty("apple_grants_creative_flight", appleGrantsFlight);
+            json.addProperty("omega_flight", omegaFlight);
+            json.addProperty("omega_flight_max", omegaFlightMax);
+            json.addProperty("omega_flight_drain", omegaFlightDrain);
+            json.addProperty("omega_flight_regen", omegaFlightRegen);
             Files.createDirectories(file.getParent());
             Files.writeString(file, new GsonBuilder().setPrettyPrinting().create().toJson(json), StandardCharsets.UTF_8);
         } catch (Exception e) {
@@ -67,6 +93,10 @@ public final class TbxConfig {
                 JsonObject json = JsonParser.parseString(Files.readString(file, StandardCharsets.UTF_8)).getAsJsonObject();
                 infiniteFluids = read(json, "infinite_fluids", infiniteFluids);
                 appleGrantsFlight = read(json, "apple_grants_creative_flight", appleGrantsFlight);
+                omegaFlight = read(json, "omega_flight", omegaFlight);
+                omegaFlightMax = readDouble(json, "omega_flight_max", omegaFlightMax);
+                omegaFlightDrain = readDouble(json, "omega_flight_drain", omegaFlightDrain);
+                omegaFlightRegen = readDouble(json, "omega_flight_regen", omegaFlightRegen);
                 return;
             }
             Files.createDirectories(file.getParent());
@@ -75,11 +105,19 @@ public final class TbxConfig {
             json.addProperty("infinite_fluids", infiniteFluids);
             json.addProperty("_comment_apple_flight", "Whether the enchanted diamond golden apple grants 30 minutes of creative flight.");
             json.addProperty("apple_grants_creative_flight", appleGrantsFlight);
+            json.addProperty("omega_flight", omegaFlight);
+            json.addProperty("omega_flight_max", omegaFlightMax);
+            json.addProperty("omega_flight_drain", omegaFlightDrain);
+            json.addProperty("omega_flight_regen", omegaFlightRegen);
             Files.writeString(file, new GsonBuilder().setPrettyPrinting().create().toJson(json), StandardCharsets.UTF_8);
             TravelersBackpackExtras.LOGGER.info("[Extra Upgrades] wrote the default config to {}", file);
         } catch (Exception e) {
             TravelersBackpackExtras.LOGGER.warn("[Extra Upgrades] could not read the config, using defaults", e);
         }
+    }
+
+    private static double readDouble(JsonObject json, String key, double fallback) {
+        return json.has(key) ? json.get(key).getAsDouble() : fallback;
     }
 
     private static boolean read(JsonObject json, String key, boolean fallback) {

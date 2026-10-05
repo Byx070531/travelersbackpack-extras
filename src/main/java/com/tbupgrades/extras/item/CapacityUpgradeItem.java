@@ -74,5 +74,13 @@ public class CapacityUpgradeItem extends UpgradeItem {
                         Component.literal(this.tier.multiplier() + "x"),
                         Component.literal(Long.toString(this.tier.multiplier() * 64L)))
                 .withStyle(ChatFormatting.BLUE));
+        // Only the omega tier flies, and the switch that turns it off is easy to miss on a 24 pixel
+        // icon, so the two lines that explain it live here.
+        if (this.tier.isOmega()) {
+            consumer.accept(Component.translatable("tooltip.travelersbackpackextras.omega_flight")
+                    .withStyle(ChatFormatting.GOLD));
+            consumer.accept(Component.translatable("tooltip.travelersbackpackextras.omega_flight_toggle")
+                    .withStyle(ChatFormatting.DARK_GRAY));
+        }
     }
 }

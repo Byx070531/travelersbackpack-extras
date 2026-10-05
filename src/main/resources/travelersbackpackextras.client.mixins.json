@@ -7,8 +7,11 @@
   "client": [
     "AbstractContainerScreenAccessor",
     "AbstractContainerScreenMixin",
+    "ExperienceBarRendererMixin",
     "GuiGraphicsMixin",
+    "GuiMixin",
     "KeyboardHandlerMixin",
+    "LocatorBarRendererMixin",
     "MouseHandlerMixin",
     "SortKeyMappingMixin",
     "TankWidgetMixin"

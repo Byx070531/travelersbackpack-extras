@@ -14,11 +14,14 @@ import net.minecraft.network.chat.Component;
  */
 public final class ClientMixinTargetVerifier {
     private static final String[] CLIENT_TARGETS = {
+            "net.minecraft.client.gui.Gui",
             "net.minecraft.client.gui.GuiGraphics",
             "net.minecraft.client.gui.screens.Screen",
             "net.minecraft.client.gui.screens.inventory.AbstractContainerScreen",
             "net.minecraft.client.MouseHandler",
             "net.minecraft.client.KeyboardHandler",
+            "net.minecraft.client.gui.contextualbar.ExperienceBarRenderer",
+            "net.minecraft.client.gui.contextualbar.LocatorBarRenderer",
             "com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TankWidget"
     };
     private ClientMixinTargetVerifier() {

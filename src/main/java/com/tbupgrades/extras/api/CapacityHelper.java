@@ -91,17 +91,57 @@ public final class CapacityHelper {
     }
 
     public static boolean hasOmega(BackpackWrapper wrapper) {
+        return omegaSlot(wrapper) >= 0;
+    }
+
+    /** The upgrade slot holding an omega upgrade, or {@code -1} when there is none. */
+    public static int omegaSlot(BackpackWrapper wrapper) {
         ItemStackHandler upgrades = upgradeHandler(wrapper);
         if (upgrades == null) {
-            return false;
+            return -1;
         }
         for (int i = 0; i < upgrades.getSlots(); i++) {
             CapacityTier tier = tierOf(upgrades.getStackInSlot(i));
             if (tier != null && tier.isOmega()) {
-                return true;
+                return i;
             }
         }
-        return false;
+        return -1;
+    }
+
+    /**
+     * Whether the installed omega upgrade is switched on.
+     *
+     * <p>The switch is Traveler's Backpack's own {@code IEnable} one, shown next to the upgrade icon,
+     * and it stores its state in that mod's {@code UPGRADE_ENABLED} component on the upgrade item
+     * itself. Reading the component rather than a live upgrade object means the answer is the same on
+     * both sides and survives a backpack being put down and picked up again. Absent means on, which is
+     * how Traveler's Backpack treats it.
+     */
+    public static boolean hasEnabledOmega(BackpackWrapper wrapper) {
+        int slot = omegaSlot(wrapper);
+        if (slot < 0) {
+            return false;
+        }
+        ItemStackHandler upgrades = upgradeHandler(wrapper);
+        return upgrades != null && isSwitchedOn(upgrades.getStackInSlot(slot));
+    }
+
+    /** Whether an upgrade stack's right-side switch is on; a missing component counts as on. */
+    public static boolean isSwitchedOn(ItemStack stack) {
+        return stack.getOrDefault(com.tiviacz.travelersbackpack.init.ModDataComponents.UPGRADE_ENABLED, Boolean.TRUE);
+    }
+
+    /**
+     * Flips an upgrade stack's switch in place and returns the new state.
+     *
+     * <p>Mutates the stack it is handed: callers pass a copy, because the component has to be written
+     * through the slot handler for Traveler's Backpack to notice and sync it.
+     */
+    public static boolean flipSwitch(ItemStack stack) {
+        boolean next = !isSwitchedOn(stack);
+        stack.set(com.tiviacz.travelersbackpack.init.ModDataComponents.UPGRADE_ENABLED, next);
+        return next;
     }
 
     /** The effective storage multiplier of this backpack; 1 when no upgrade is installed. */

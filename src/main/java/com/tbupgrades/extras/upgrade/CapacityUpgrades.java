@@ -2,6 +2,7 @@ package com.tbupgrades.extras.upgrade;
 
 import com.tbupgrades.extras.api.CapacityTier;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 
 import java.util.EnumMap;
@@ -97,7 +98,17 @@ public final class CapacityUpgrades {
         }
     }
 
-    public static class Omega extends CapacityUpgrade {
+    /**
+     * The omega upgrade, and the only one carrying a switch.
+     *
+     * <p>Traveler's Backpack decides whether to draw that little on/off lever purely with
+     * {@code instanceof IEnable}, and routes clicks on it into {@code IEnable.setEnabled}. Both of
+     * {@code IEnable}'s methods are default methods that read and write that mod's
+     * {@code UPGRADE_ENABLED} component, which is exactly the storage this addon wants: the state
+     * travels with the upgrade item and is visible to both sides without any packet of our own.
+     * Implementing the interface is therefore the whole switch - no widget code, no click handling.
+     */
+    public static class Omega extends CapacityUpgrade implements IEnable {
         public Omega(UpgradeManager manager, int slot) {
             super(manager, slot, CapacityTier.OMEGA);
         }

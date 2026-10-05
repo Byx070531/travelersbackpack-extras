@@ -15,6 +15,7 @@
     "HoseItemMixin",
     "ItemStackHandlerMixin",
     "ItemStackMixin",
+    "PlayerAccessor",
     "ResultSlotMixin",
     "ServerActionsMixin",
     "SortSelectorMixin",

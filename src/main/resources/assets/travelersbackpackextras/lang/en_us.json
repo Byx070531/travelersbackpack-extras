@@ -36,5 +36,9 @@
     "screen.travelersbackpackextras.apple_flight":  "Apple grants creative flight: %s",
     "tooltip.travelersbackpackextras.widget_title":  "%sx (%s)",
     "tooltip.travelersbackpackextras.widget_title_infinite":  "%sx (%s) (endless fluid)",
-    "tooltip.travelersbackpackextras.infinite_line":  "Water and lava become endless"
+    "tooltip.travelersbackpackextras.infinite_line":  "Water and lava become endless",
+    "key.category.travelersbackpackextras.main":  "Extra Upgrades",
+    "key.travelersbackpackextras.omega_flight":  "Toggle Omega Flight (hold Shift)",
+    "tooltip.travelersbackpackextras.omega_flight":  "Switch on: creative flight on a charge of 600, one point per second airborne",
+    "tooltip.travelersbackpackextras.omega_flight_toggle":  "The switch sits right of the upgrade icon; Shift + the bound key works too"
 }

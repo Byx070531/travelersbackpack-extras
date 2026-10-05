@@ -1,6 +1,7 @@
 package com.tbupgrades.extras.client.mixin;
 
 import com.tbupgrades.extras.api.TbxTankHover;
+import com.tbupgrades.extras.client.OmegaFlightClient;
 import com.tbupgrades.extras.common.BackpackActionPayload;
 import com.tbupgrades.extras.common.BackpackInteractions;
 import com.tiviacz.travelersbackpack.inventory.menu.AbstractBackpackMenu;
@@ -72,5 +73,36 @@ public abstract class KeyboardHandlerMixin {
         }
         ClientPlayNetworking.send(new BackpackActionPayload(BackpackActionPayload.Action.DROP_BIG, hovered.index));
         ci.cancel();
+    }
+
+    /**
+     * Shift + the omega flight key toggles the omega upgrade's switch from anywhere in the world.
+     *
+     * <p>Caught here, before vanilla sees it, for one specific reason: the default key is {@code F},
+     * which is also "swap items with offhand". Letting that press through would toggle the flight
+     * <em>and</em> swap the offhand, so exactly that press is swallowed. Any other key has nothing to
+     * swallow - it is left for whatever else is bound to it, which matters because a player is free to
+     * rebind this onto a key that does something else.
+     *
+     * <p>Plain {@code F} is untouched: without Shift this returns immediately.
+     */
+    @Inject(method = "keyPress", at = @At("HEAD"), cancellable = true)
+    private void tbx$toggleOmegaFlight(long window, int action, KeyEvent keyEvent, CallbackInfo ci) {
+        if (action != TBX_PRESS) {
+            return;
+        }
+        Minecraft minecraft = Minecraft.getInstance();
+        // Only in the world: with a screen open the backpack's own switch is right there, and the
+        // player may well be typing.
+        if (minecraft.screen != null || minecraft.player == null) {
+            return;
+        }
+        if (!keyEvent.hasShiftDown() || !OmegaFlightClient.toggleKey().matches(keyEvent)) {
+            return;
+        }
+        OmegaFlightClient.sendToggle();
+        if (minecraft.options.keySwapOffhand.matches(keyEvent)) {
+            ci.cancel();
+        }
     }
 }

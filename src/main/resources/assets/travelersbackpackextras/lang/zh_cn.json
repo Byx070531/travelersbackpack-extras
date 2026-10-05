@@ -36,5 +36,9 @@
     "screen.travelersbackpackextras.apple_flight":  "金苹果给予创造飞行：%s",
     "tooltip.travelersbackpackextras.widget_title":  "%s倍（%s）",
     "tooltip.travelersbackpackextras.widget_title_infinite":  "%s倍（%s）（无限流体）",
-    "tooltip.travelersbackpackextras.infinite_line":  "岩浆/水可无限"
+    "tooltip.travelersbackpackextras.infinite_line":  "岩浆/水可无限",
+    "key.category.travelersbackpackextras.main":  "额外升级",
+    "key.travelersbackpackextras.omega_flight":  "欧米伽飞行开关（需按住 Shift）",
+    "tooltip.travelersbackpackextras.omega_flight":  "开关打开时给予创造飞行：600 点飞行值，飞行每秒消耗 1 点",
+    "tooltip.travelersbackpackextras.omega_flight_toggle":  "开关在升级图标右侧，也可用 Shift + 绑定的按键切换"
 }
