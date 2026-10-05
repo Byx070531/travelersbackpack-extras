@@ -170,6 +170,23 @@ $tb  = "E:\Minecraft\.minecraft\versions\1.21.11Fabric\mods\[旅行者背包] tr
 10. 注入点的选择要看**调用栈**：`ContinuousCraftingHandler` 的 `onTickInGame` 只是跟踪界面、`handle` 才是干活的；同类的要**两个都拦**。
 11. **同一个方法可以挂多个 `@Inject`**，只要处理器方法名不同（`KeyboardHandlerMixin` 就往 `keyPress` 挂了两个）。
 12. 要拿到的字段/方法在原版里是 `private` 时，**先看它有没有藏在别处的公开等价物**：`Gui` 里已经没有经验条了，别死磕。
+13. **`@Redirect` 会跟别的模组抢指令，抢输了对方直接崩客户端**（用户 163 模组整合包实测崩溃）。
+    - 报错长这样，一眼就能认：
+      ```
+      @Redirect conflict. Skipping bettermounthud.mixins.json:IngameHudMixin from mod bettermounthud
+        -> @Redirect::bettermounthud$renderExperienceLevel(MultiPlayerGameMode)Z with priority 1000,
+      already redirected by travelersbackpackextras.client.mixins.json:GuiMixin
+        -> @Redirect::tbx$chargeInsteadOfLevel(MultiPlayerGameMode)Z with priority 1000
+      Caused by: InjectionError: Critical injection failure: ... (0/1) succeeded. Scanned 0 target(s).
+      ```
+      同一个指令只能有一个 `@Redirect`，先应用的赢，输的那个扫描到 0 个目标；对方 `require = 1` 就直接 `Mixin transformation of net.minecraft.class_329 failed` 崩在启动阶段。
+    - **注意 `require = 0` 救不了这种情况**：崩的是**对方**的注入器。想不害人，唯一的办法是**别抢那条指令**。
+    - 修法：**换一条没人盯着的等价指令**。这次原来是拦 `Gui.renderHotbarAndDecorations` 里的 `MultiPlayerGameMode.hasExperience()` 调用（BetterMountHUD 抢的就是它），改成拦同一个方法里**第一次**读 `LocalPlayer.experienceLevel` 那个 GETFIELD（`ordinal = 0`，也就是 `ifle` 的守卫），返回 0 一样能跳过整个等级数字块，而且没人抢。
+    - 同时给这个注入器加 `require = 0`：纯显示功能，**万一将来有别的模组也抢这个字段，宁可等级数字盖在飞行条上（丑），也不要崩客户端**。这是全项目唯一一处对原版目标用 `require = 0` 的地方，理由就是这个。
+    - **怎么知道别人抢了哪条指令**：翻对方 jar 里的 `*-refmap.json`，里面有 named → intermediary 的完整映射。BetterMountHUD 那份直接写着
+      `ClientPlayerInteractionManager.hasExperienceBar()Z` → `class_636.method_2913()Z`，对上我们的 `MultiPlayerGameMode.hasExperience()`。
+    - **怎么复现**：把冲突模组的 jar 丢进项目的 `run\mods\`，`gradle runClient` 就会加载它并复现崩溃（Fabric Loader 开发环境会扫描 run 目录）。**这个 jar 现在留在 `run\mods\bettermounthd-1.2.6.jar` 当常驻哨兵** —— 以后每次跑 runClient 都顺带验证一遍不冲突。
+    - 自查：本项目对**原版**目标用 `@Redirect` 的只剩 `GuiMixin` 和 `ResultSlotMixin`（后者打的是 `CraftingContainer.removeItem(II)`，冷门，暂时安全）；其余 `@Redirect` 都打在旅行者背包自己的内部方法上，风险低。
 
 ### 旅行者背包 API（已确认可用的写法）
 13. 拆升级入口：`ServerActions.removeBackpackUpgrade(ServerPlayer, int)`（`mayPickup` 那条路是死的 —— 安装后的升级槽被 TB 锁住）。
