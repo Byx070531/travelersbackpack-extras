@@ -23,7 +23,8 @@ import net.minecraft.world.item.ItemStack;
  *     <li>Shift + right click - move a single item into the player's inventory.</li>
  *     <li>Alt + left click - fill every empty inventory slot with one group.</li>
  *     <li>Control + drop key - drop one group on the ground.</li>
- *     <li>Control + shift + drop key - drop 1024 items (16 groups), or everything if fewer.</li>
+ *     <li>Control + shift + drop key - drop 1024 items (16 groups), or everything if fewer; on a
+ *     shulker box, every box in the backpack holding the same contents.</li>
  * </ul>
  *
  * <p>These rules only take over slots of a backpack that actually has a storage upgrade installed
@@ -289,11 +290,62 @@ public final class BackpackInteractions {
         return moveToPlayer(player, storage, index, 1L);
     }
 
-    /** Control + shift + drop key: drop up to 1024 items. */
+    /**
+     * Control + shift + drop key: drop up to 1024 items, or every shulker box holding the same
+     * contents.
+     *
+     * <p>A shulker box never stacks, so "1024 items" out of one slot is one box - which makes the key
+     * combination useless for the case it is most wanted in: a backpack full of boxes packed with the
+     * same thing, where dropping them one click at a time is the whole chore. So when the slot under
+     * the cursor holds a shulker box, every box in the backpack with identical contents goes instead,
+     * however many there are.
+     */
     public static boolean dropBig(AbstractContainerMenu menu, int slotId, Player player) {
-        return dropFrom(menu, slotId, player, BIG_DROP);
+        if (!(menu instanceof AbstractBackpackMenu backpackMenu) || !isStorageSlot(menu, slotId)) {
+            return false;
+        }
+        ItemStackHandler storage = backpackMenu.getWrapper().getStorage();
+        int index = menu.getSlot(slotId).getContainerSlot();
+        ItemStack clicked = storage.getStackInSlot(index);
+        if (isShulkerBox(clicked)) {
+            return dropMatchingShulkerBoxes(player, storage, clicked);
+        }
+        return drop(player, storage, index, BIG_DROP);
     }
 
+    /**
+     * Drops every shulker box in the storage whose contents match {@code sample}.
+     *
+     * <p>Contents are compared the ordinary way, by item and components: a shulker box keeps what is
+     * inside it in a component, so two boxes packed with the same stacks compare equal and boxes
+     * packed differently do not. An empty box therefore only matches other empty boxes, which is the
+     * honest reading of "the same box".
+     */
+    private static boolean dropMatchingShulkerBoxes(Player player, ItemStackHandler storage, ItemStack sample) {
+        boolean dropped = false;
+        for (int i = 0; i < storage.getSlots(); i++) {
+            ItemStack stack = storage.getStackInSlot(i);
+            if (stack.isEmpty() || !ItemStack.isSameItemSameComponents(sample, stack)) {
+                continue;
+            }
+            // The whole slot, not one group: a box is one item, and a slot of stacked empty boxes
+            // (a Carpet rule) is still "the boxes that match".
+            dropped |= drop(player, storage, i, Long.MAX_VALUE);
+        }
+        return dropped;
+    }
+
+    /** Whether this stack is a shulker box, judged by item id so modded ones are covered too. */
+    public static boolean isShulkerBox(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        net.minecraft.resources.Identifier key =
+                net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem());
+        return key != null && key.getPath().contains("shulker_box");
+    }
+
+    /** Control + shift + drop key: drop up to 1024 items. */
     private static boolean dropFrom(AbstractContainerMenu menu, int slotId, Player player, long wanted) {
         if (!(menu instanceof AbstractBackpackMenu backpackMenu) || !isStorageSlot(menu, slotId)) {
             return false;

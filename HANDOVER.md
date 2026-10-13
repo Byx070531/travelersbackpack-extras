@@ -143,10 +143,13 @@ $tb  = "E:\Minecraft\.minecraft\versions\1.21.11Fabric\mods\[旅行者背包] tr
 
 - **9 种容量升级**：木×2 → 欧米伽×33554432；相乘叠加、低级叠加封顶 4096、单格上限 2147483648
 - **超大堆叠**：`virtual_count` 组件承载逻辑数量（组件存在时物理数量恒为 1）、k/m/b 缩写、整理自动合并、按数量/名称排序、受单格上限约束
-- **鼠标操作**：左键一组 / Shift+右键 1 个 / Shift+左键转入 / Alt+左键铺满空位 / Ctrl 丢弃 / Ctrl+Shift 丢 1024 / 中键取方块（创造）/ **Ctrl+左键两下交换槽位** / **Shift+点「提取到物品栏」只搬第一个超堆叠**
+- **鼠标操作**：左键一组 / Shift+右键 1 个 / Shift+左键转入 / Alt+左键铺满空位 / Ctrl 丢弃 / Ctrl+Shift 丢 1024（**对潜影盒改为「内容全同一起丢」**）/ 中键取方块（创造）/ **Ctrl+左键两下交换槽位** / **Shift+点「提取到物品栏」只搬第一个超堆叠**
 - **升级管理**：拆升级需「剩余倍率仍够用」（`CapacityHelper.canRemoveUpgrade`）、最多 3 个、可重复安装
 - **欧米伽创造飞行**：见上一节（飞行值随玩家存档保存，换背包、退游戏、死亡都不重置）
 - **金苹果创造飞行也会「退出时在空中→重进还在空中」**：和欧米伽走同一套恢复动作（强制 `flying` + `onUpdateAbilities()`），两个来源共用 `WAS_AIRBORNE`
+- **Ctrl+Shift+丢弃 对潜影盒是「内容全同一起丢」**：潜影盒不堆叠、一盒算一个物品，所以「丢 1024 个」对它只等于丢一盒。`BackpackInteractions.dropBig` 现在先判断被点的格子是不是潜影盒（`isShulkerBox`，按物品 id 含 `shulker_box` 判定，兼容染色与模组潜影盒），是就走 `dropMatchingShulkerBoxes`：扫全部存储格，`ItemStack.isSameItemSameComponents` 与被点的一致就**整格丢光**（`drop(..., Long.MAX_VALUE)`），多少个都丢。
+  - 「内容相同」靠 `isSameItemSameComponents` —— 潜影盒内容存在组件里，所以装一样才算一样；**而且这个比较已经被 `ItemStackMixin` 改成忽略 `virtual_count`**，不会因为我们的计数组件误判。
+  - 自检加了 8 条 `checkShulkerDrops`（识别潜影盒 / 内容同异 / 空盒不算 / 部分装满不算），改这条规则前先看它。
 - **喂食升级**：吃背包里的食物会正确扣减（`FeedingUpgradeMixin` 的 `copy()` 重定向）
 - **无限流体**：下界合金及以上，水>2桶 / 岩浆>10000桶变无限；水管可吸取回收；槽位清除
 - **内容**：龙鳞（复活末影龙掉落，每级抢夺独立 30% 多掉 1）、海洋之心配方、鞘翅配方（**模板不消耗**）
@@ -197,6 +200,8 @@ $tb  = "E:\Minecraft\.minecraft\versions\1.21.11Fabric\mods\[旅行者背包] tr
 18. 中键被 TB 占成整理（`SORT_BACKPACK.matchesMouse`）→ 创造模式下让 `KeyMapping.matchesMouse` 返回 false。
 19. 升级开关一律走 `IEnable` + `ModDataComponents.UPGRADE_ENABLED` 组件，别自己造组件、别自己写点击。
 20. **改升级物品的组件要 `copy()` 之后再 `setStackInSlot`**（TB 自己也是这么干的），原地改活对象不会被同步。
+21. **「一盒算一个」的物品要单独想一遍**（潜影盒这条就是这么暴露的）。`drop(..., 1024)` 对能堆叠的东西是「丢 16 组」，对潜影盒却只等于「丢一盒」—— 规则本身没错，但它对潜影盒**没有意义**。所以 `dropBig` 现在先看物品类型，是潜影盒就换成「内容全同一起丢」。以后任何按「数量」设计的规则，都要先问一句「这个物品一格真的能放多个吗」。
+22. **`hovered.getItem()` 这类解引用，一定要排在 `hovered == null` 之后**。上一轮往 `MouseHandlerMixin` / `AbstractContainerScreenMixin` 里插潜影盒放行时把判断插到了 null 检查**前面**，等于给「按住 Alt 点空白处」埋了个 NPE（`getHoveredSlot()` 平时就是 null）。插入新判断时先看一眼它前面有没有判空。
 
 ### 工具与脚本（务必遵守，否则会写出坏文件）
 21. **写中文/JSON 一律用 `[System.IO.File]::WriteAllText($p, $t, (New-Object System.Text.UTF8Encoding($false)))`**。PowerShell 5.1 的 `Set-Content` 默认 ANSI，会把中文写成 `?` 或乱码。

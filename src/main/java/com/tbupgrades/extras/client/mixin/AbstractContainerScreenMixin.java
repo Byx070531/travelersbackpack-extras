@@ -58,15 +58,16 @@ public abstract class AbstractContainerScreenMixin {
             return;
         }
         Slot hovered = this.hoveredSlot;
-        // Shulker boxes are handed back to the other mods: a filled one never stacks, so spreading "one
-        // group" makes no sense, and taking the click would break Item Scroller's alt-click, which moves
-        // every shulker box holding the same contents.
-        if (!hovered.getItem().isEmpty()
-                && net.minecraft.core.registries.BuiltInRegistries.ITEM
-                        .getKey(hovered.getItem().getItem()).getPath().contains("shulker_box")) {
+        // Shulker boxes are handed back to the other mods: a filled one never stacks, so spreading
+        // "one group" makes no sense, and taking the click would break Item Scroller's alt-click,
+        // which moves every shulker box holding the same contents.
+        if (hovered == null) {
             return;
         }
-        if (hovered == null || !BackpackInteractions.isStorageSlot(menu, hovered.index)) {
+        if (BackpackInteractions.isShulkerBox(hovered.getItem())) {
+            return;
+        }
+        if (!BackpackInteractions.isStorageSlot(menu, hovered.index)) {
             return;
         }
         ClientPlayNetworking.send(new BackpackActionPayload(BackpackActionPayload.Action.FILL_INVENTORY, hovered.index));

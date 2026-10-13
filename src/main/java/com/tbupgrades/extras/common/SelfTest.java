@@ -215,6 +215,7 @@ public final class SelfTest {
         report.append(checkMultipliers(failures));
         report.append(checkEndlessTank(failures));
         report.append(checkFlightCharge(failures, server));
+        report.append(checkShulkerDrops(failures));
 
         report.append(failures.isEmpty()
                 ? "RESULT: PASS\n================================"
@@ -456,6 +457,54 @@ public final class SelfTest {
             out.append("  flight charge check threw: ").append(e).append('\n');
         }
         return out.toString();
+    }
+
+    /**
+     * Control + shift + drop drops every shulker box with the same contents, so what counts as "the
+     * same" has to be the contents and only the contents.
+     *
+     * <p>A filled box keeps its items in a component, which is what makes the comparison work: two
+     * boxes packed identically compare equal, two packed differently do not, and an empty box matches
+     * only other empty boxes. Getting this wrong is invisible until someone drops the wrong boxes.
+     */
+    private static String checkShulkerDrops(List<String> failures) {
+        StringBuilder out = new StringBuilder();
+        try {
+            check(out, failures, "a shulker box is recognised", "true",
+                    Boolean.toString(BackpackInteractions.isShulkerBox(new ItemStack(Items.SHULKER_BOX))));
+            check(out, failures, "a coloured shulker box is recognised", "true",
+                    Boolean.toString(BackpackInteractions.isShulkerBox(new ItemStack(Items.RED_SHULKER_BOX))));
+            check(out, failures, "a chest is not a shulker box", "false",
+                    Boolean.toString(BackpackInteractions.isShulkerBox(new ItemStack(Items.CHEST))));
+            check(out, failures, "an empty stack is not a shulker box", "false",
+                    Boolean.toString(BackpackInteractions.isShulkerBox(ItemStack.EMPTY)));
+
+            ItemStack cobbleBox = filledShulker(Items.COBBLESTONE, 64);
+            ItemStack sameCobbleBox = filledShulker(Items.COBBLESTONE, 64);
+            ItemStack dirtBox = filledShulker(Items.DIRT, 64);
+            ItemStack thinCobbleBox = filledShulker(Items.COBBLESTONE, 7);
+            check(out, failures, "boxes with the same contents match", "true",
+                    Boolean.toString(ItemStack.isSameItemSameComponents(cobbleBox, sameCobbleBox)));
+            check(out, failures, "boxes with different contents do not match", "false",
+                    Boolean.toString(ItemStack.isSameItemSameComponents(cobbleBox, dirtBox)));
+            check(out, failures, "a partly filled box is not a full one", "false",
+                    Boolean.toString(ItemStack.isSameItemSameComponents(cobbleBox, thinCobbleBox)));
+            check(out, failures, "an empty box is not a filled one", "false",
+                    Boolean.toString(ItemStack.isSameItemSameComponents(cobbleBox, new ItemStack(Items.SHULKER_BOX))));
+        } catch (RuntimeException e) {
+            failures.add("shulker drop check failed: " + e);
+            out.append("  shulker drop check threw: ").append(e).append('\n');
+        }
+        return out.toString();
+    }
+
+    /** A shulker box holding a single stack, the way a packed one looks. */
+    private static ItemStack filledShulker(Item item, int count) {
+        ItemStack box = new ItemStack(Items.SHULKER_BOX);
+        box.set(net.minecraft.core.component.DataComponents.CONTAINER,
+                net.minecraft.world.item.component.ItemContainerContents
+                        .fromItems(List.of(new ItemStack(item, count))));
+        return box;
     }
 
     private static boolean isEndless(net.minecraft.world.level.material.Fluid fluid, long amount, boolean enabled) {

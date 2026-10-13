@@ -52,15 +52,17 @@ public abstract class MouseHandlerMixin {
         if (buttonInfo.button() == TBX_LEFT
                 && (buttonInfo.hasAltDown() || minecraft.hasAltDown())) {
             Slot hovered = ((AbstractContainerScreenAccessor) screen).tbx$getHoveredSlot();
-        // Shulker boxes are handed back to the other mods: a filled one never stacks, so spreading "one
-        // group" makes no sense, and taking the click would break Item Scroller's alt-click, which moves
-        // every shulker box holding the same contents.
-        if (!hovered.getItem().isEmpty()
-                && net.minecraft.core.registries.BuiltInRegistries.ITEM
-                        .getKey(hovered.getItem().getItem()).getPath().contains("shulker_box")) {
-            return;
-        }
-            if (hovered == null || !BackpackInteractions.isStorageSlot(menu, hovered.index)) {
+            if (hovered == null) {
+                return;
+            }
+            // Shulker boxes are handed back to the other mods: a filled one never stacks, so spreading
+            // "one group" makes no sense, and taking the click would break Item Scroller's alt-click,
+            // which moves every shulker box holding the same contents. The null check has to come
+            // first - the pointer is not always over a slot, and this runs on every alt + left press.
+            if (BackpackInteractions.isShulkerBox(hovered.getItem())) {
+                return;
+            }
+            if (!BackpackInteractions.isStorageSlot(menu, hovered.index)) {
                 return;
             }
             ClientPlayNetworking.send(new BackpackActionPayload(BackpackActionPayload.Action.FILL_INVENTORY, hovered.index));
@@ -78,7 +80,8 @@ public abstract class MouseHandlerMixin {
                 ci.cancel();
                 return;
             }
-        }        if (buttonInfo.button() == TBX_RIGHT && buttonInfo.hasShiftDown() && menu.getCarried().isEmpty()) {
+        }
+        if (buttonInfo.button() == TBX_RIGHT && buttonInfo.hasShiftDown() && menu.getCarried().isEmpty()) {
             Slot hovered = ((AbstractContainerScreenAccessor) screen).tbx$getHoveredSlot();
             if (hovered == null || !BackpackInteractions.isManagedSlot(menu, hovered.index)) {
                 return;
